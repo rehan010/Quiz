@@ -102,7 +102,7 @@ class UserQuiz(models.Model):
     )
     BOOL_CHOICES = ((True, 'Y'), (False, 'N'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_quiz")
-    no_of_artifact = models.IntegerField(default=5, validators=[MaxValueValidator(100),MinValueValidator(1)], blank=True, null=True)
+    no_of_artifact = models.IntegerField(default=1, validators=[MaxValueValidator(100),MinValueValidator(1)], blank=True, null=True)
     bg_transparency = models.IntegerField(default=0, validators=[MaxValueValidator(100),MinValueValidator(1)], blank=True, null=True)
     artifact_name= models.CharField(editable=False,max_length=30)
     quiz_type = models.CharField(max_length=20, null=True, choices=QUIZ_CHOICES)

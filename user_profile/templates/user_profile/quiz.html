@@ -13,24 +13,76 @@
         </div>
 
         <div class="col col-9 ">
-
+            <div class="alert alert-success" id="generated" style="display:none" role="alert">
+                Quiz Generated Successfully!
+            </div>
             <div class="card">
                 <div class="card-body">
                     <h2 class="h6">Quiz</h2>
                     <hr>
                     <p>Quiz creation Form</p>
-                    <form class="form" id="user_quiz_form" enctype="multipart/form-data" method="post" action=".">
+                    <form class="form" id="user_quiz_form"  data-url="{% url 'quiz' %}" enctype="multipart/form-data" method="post" action=".">
                         {% csrf_token %}
                         {% bootstrap_form user_quiz_form %}
                         {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                         {% endif %}
-                        <button type="submit" class="btn btn-primary ">Quiz </button>
+                        <button type="button" onclick="alertfunc()" class="btn btn-primary " >Quiz </button>
                     </form>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+function alertfunc(){
+    if (confirm('Are you sure to generate quiz')) {
+      // Save it!
+      console.log('Generated Successfully!');
+      var endpoint = $('#user_quiz_form').attr("data-url");
+      var token = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+
+      $.ajax({
+            type : "POST", // http method
+            url : endpoint, // the endpoint
+            headers: {
+                    'X-CSRFToken': token
+            },
+            data : {
+            csrfmiddlewaretoken : token,
+            no_of_artifact : $('#id_no_of_artifact').val(),
+            bg_transparency : $('#id_bg_transparency').val(),
+            quiz_type : $('#id_quiz_type').val(),
+            difficulty : $('#id_difficulty').val(),
+            font_name : $('#id_font_name').val(),
+            font_size : $('#id_font_size').val(),
+            font_color : $('#id_font_color').val(),
+            bold : $('#id_bold').val(),
+            retention_period : $('#id_retention_period').val(),
+            file_share_path : $('#id_file_share_path').val(),
+            bg_image_type : $('#id_bg_image_type').val(),
+            solid_color : $('#id_solid_color').val(),
+            bg_image : $('#id_bg_image')[0].files[0],
+            }, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                document.getElementById('generated').style.display = 'block'
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setInterval(function () {
+                    document.getElementById('generated').style.display = 'none';
+                }, 3000);
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                console.log(errmsg);
+            }
+        });
+    } else {
+      // Do nothing!
+      console.log('Cancel');
+    }
+}
+</script>
 {% endblock %}

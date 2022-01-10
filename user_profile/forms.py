@@ -1,6 +1,7 @@
 from user_profile.models import UserProfile,UserQuiz
 from django import forms
 from django.contrib.auth import get_user_model
+from django.forms.widgets import TextInput
 
 User = get_user_model()
 
@@ -16,6 +17,10 @@ class UserQuizModelForm(forms.ModelForm):
         model = UserQuiz
         fields = ('no_of_artifact','bg_transparency','quiz_type','difficulty','font_name','font_size','font_color','bold','retention_period',
                   'file_share_path','bg_image_type','solid_color','bg_image')
+        widgets = {
+            'font_color': TextInput(attrs={'type': 'color','style':'padding:0px'}),
+            'solid_color': TextInput(attrs={'type': 'color','style':'padding:0px'}),
+        }
 
 
 class UserDetailModelForm(forms.ModelForm):

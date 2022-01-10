@@ -1,3 +1,6 @@
+import textwrap
+from string import ascii_letters
+
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -6,13 +9,24 @@ from django.shortcuts import redirect, reverse
 from user_profile.forms import UserProfileModelForm, UserDetailModelForm,UserQuizModelForm
 from fpdf import FPDF
 from .models import UserQuiz
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from matplotlib import colors
 import numpy as np
 from webcolors import name_to_rgb
+
+
+def listToString(s):
+    # initialize an empty string
+    str1 = ""
+    # traverse in the string
+    for ele in s:
+        str1 += ele + " "
+    # return string
+    return str1
+
 def matrix_funct(df):
-    matrix=[['2','3','5','?']]
-    return matrix
+    matrix=['2','3','5','?']
+    return listToString(matrix)
 
 
 
@@ -61,11 +75,25 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
             obj.save()
             matrix_funct(obj)
+            W, H = (1200, 1200)
+            font = ImageFont.truetype("Ubuntu-R.ttf", size=int(request.POST['font_size']))
+            if request.POST['bg_image_type'] == 's':
+                img = Image.new('RGB', (W, H),obj.solid_color)
 
-            img = Image.new('RGB', (300, 200),name_to_rgb(obj.solid_color, spec='css3'))
+            else:
+                img = Image.open(request.FILES['bg_image'])
             # img.putalpha(255)
+            # avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+            # Translate this average length into a character count
+            # max_char_count = int(img.size[0] * .618 / avg_char_width)
+            # Create a wrapped text object using scaled character count
             d = ImageDraw.Draw(img)
-            d.text((10, 10), str(matrix_funct(d)), fill=name_to_rgb(obj.font_color, spec='css3'))
+            font_width, font_height = font.getsize(str(matrix_funct(d)))
+            new_width = (img.size[0] - font_width) / 2
+            new_height = (img.size[1] - font_height) / 2
+            # text = textwrap.fill(text=str(matrix_funct(d)), width=1000)
+            # w, h = d.textsize(str(matrix_funct(d)))
+            d.text(xy=(new_width, new_height), text=str(matrix_funct(d)), font=font, fill=obj.font_color ,anchor="mm")
             img.save('media/img/'+obj.artifact_name+'.png')
 
 
