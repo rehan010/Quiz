@@ -18,8 +18,16 @@ class UserQuizModelForm(forms.ModelForm):
         fields = ('no_of_artifact','bg_transparency','quiz_type','difficulty','font_name','font_size','font_color','bold','retention_period',
                   'file_share_path','bg_image_type','solid_color','bg_image')
         widgets = {
+            'no_of_artifact': TextInput(attrs={'type': 'number','min':'1'}),
+            'bg_transparency': TextInput(attrs={'type': 'number','min':'1'}),
             'font_color': TextInput(attrs={'type': 'color','style':'padding:0px'}),
             'solid_color': TextInput(attrs={'type': 'color','style':'padding:0px'}),
+        }
+        labels = {
+            'bg_transparency': "Background transparency",
+            'retention_period': "Retention period (days)",
+            'bg_image_type': "Background image type",
+            'bg_image': "Background image",
         }
 
 

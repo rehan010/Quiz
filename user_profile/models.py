@@ -103,9 +103,9 @@ class UserQuiz(models.Model):
     BOOL_CHOICES = ((True, 'Y'), (False, 'N'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_quiz")
     no_of_artifact = models.IntegerField(default=1, validators=[MaxValueValidator(100),MinValueValidator(1)], blank=True, null=True)
-    bg_transparency = models.IntegerField(default=0, validators=[MaxValueValidator(100),MinValueValidator(1)], blank=True, null=True)
+    bg_transparency = models.IntegerField(default=1, validators=[MaxValueValidator(100),MinValueValidator(1)], blank=True, null=True)
     artifact_name= models.CharField(editable=False,max_length=30)
-    quiz_type = models.CharField(max_length=20, null=True, choices=QUIZ_CHOICES)
+    quiz_type = models.CharField(max_length=20, null=True, choices=QUIZ_CHOICES,default='s')
     difficulty = models.CharField(max_length=20, null=True, choices=DIFFICULTY_CHOICES,default='b')
     font_name = models.CharField(max_length=20, null=True, choices=FONT_CHOICES,default='1')
     font_size = models.IntegerField(default=25,null=True,blank=True)
@@ -113,8 +113,8 @@ class UserQuiz(models.Model):
     bold = models.BooleanField(choices=BOOL_CHOICES,default=False)
     retention_period = models.IntegerField(default=270,null=True,blank=True)
     file_share_path = models.CharField(max_length=100, default="https://")
-    bg_image_type = models.CharField(max_length=20, null=True,blank=True, choices=BG_IMAGE_CHOICES)
-    solid_color = models.CharField(max_length=50, default="Blue")
+    bg_image_type = models.CharField(max_length=20, null=True, choices=BG_IMAGE_CHOICES,default='s')
+    solid_color = models.CharField(max_length=50,null=True,blank=True, default="Blue")
     bg_image = models.ImageField(null=True,blank=True,default="https://www.w3schools.com/images/picture.jpg")
 
 

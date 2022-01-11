@@ -82,6 +82,8 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
             else:
                 img = Image.open(request.FILES['bg_image'])
+                newsize = (1200, 1200)
+                img = img.resize(newsize)
             # img.putalpha(255)
             # avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
             # Translate this average length into a character count

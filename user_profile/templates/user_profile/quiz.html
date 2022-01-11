@@ -35,6 +35,21 @@
     </div>
 </div>
 <script>
+
+document.getElementById("id_bg_image").setAttribute("disabled", "true");
+document.getElementById("id_bg_image_type").onclick = function() {imagetype()};
+function imagetype() {
+  selectedval = document.getElementById("id_bg_image_type").value;
+  if(selectedval == 's'){
+    document.getElementById("id_bg_image").setAttribute("disabled", "true");
+    document.getElementById("id_solid_color").removeAttribute("disabled");
+    }
+  else if(selectedval == 'i'){
+    document.getElementById("id_bg_image").removeAttribute("disabled");
+    document.getElementById("id_solid_color").setAttribute("disabled", "true");
+    }
+}
+
 function alertfunc(event){
     if (confirm('Are you sure to generate quiz')) {
       // Save it!
