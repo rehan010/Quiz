@@ -23,16 +23,37 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h2 class="h6">Quiz</h2>
+
+                    <h3 class="text-center">
+                      Form
+                      <small class="text-muted">For Quiz Creation</small>
+                    </h3>
                     <hr>
-                    <p>Quiz creation Form</p>
+
                     <form class="form" id="user_quiz_form"  data-url="{% url 'quiz' %}" enctype="multipart/form-data" method="post" action=".">
                         {% csrf_token %}
-                        {% bootstrap_form user_quiz_form %}
+
+                        {% bootstrap_field user_quiz_form.no_of_artifact layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.bg_transparency layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.quiz_type layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.difficulty layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.font_name layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.font_size layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.font_color layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.bold layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.retention_period layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.file_share_path layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.bg_image_type layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.solid_color layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.bg_image layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.tag_line_font_size layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.tag_line_text layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.local_folder layout='horizontal' size='sm'%}
+                        {% bootstrap_field user_quiz_form.test layout='horizontal' size='sm'%}
                         {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                         {% endif %}
-                        <button type="button" onclick="alertfunc(event)" class="btn btn-primary " >Quiz </button>
+                        <button type="button" onclick="alertfunc(event)" class="btn btn-primary btn-lg btn-block" >Quiz </button>
                     </form>
                 </div>
             </div>
