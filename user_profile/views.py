@@ -30,6 +30,18 @@ font_map={
         'Rockwell':'static/fonts/rock.TTF',
         'Franklin Gothic':'static/fonts/Franklin gothic.ttf'
 }
+font_map_bold={
+        'Arial':'static/fonts/bold/arialb.ttf',
+        'Helvetica':'static/fonts/helveticab.ttf',
+        'Calibri':'static/fonts/bold/calibriab.ttf',
+        'Futura':'static/fonts/bold/futurab.ttf',
+        'Garamond':'static/fonts/bold/garamondb.ttf',
+        'Times New Roman':'static/fonts/bold/times new roman bold.ttf',
+        'Cambria':'static/fonts/bold/cambria.ttf',
+        'Verdana':'static/fonts/bold/verdanab.ttf',
+        'Rockwell':'static/fonts/bold/rockb.ttf',
+        'Franklin Gothic':'static/fonts/bold/FranklinGothic.ttf'
+}
 
 def listToString(s):
     # initialize an empty string
@@ -112,6 +124,7 @@ def matrix_funct(df):
     return listToString(matrix1)
 
 
+
 class UserProfileView(TemplateView, LoginRequiredMixin):
     template_name = "user_profile/profile.html"
 
@@ -150,17 +163,17 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
         context['user_quiz_form'] = user_quiz_form = UserQuizModelForm(request.POST, request.FILES)
 
         if user_quiz_form.is_valid() :
-
-            obj = user_quiz_form.save(commit=False)
-            f = font_map[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
-
-            if obj.test == True:
-
-                tag_line_text= str(obj.tag_line_text)
-                tag_line_text_lines= textwrap.wrap(str(obj.tag_line_text), width=30)
-                matrix_text= str(matrix_funct(obj))
-                matrix_text_lines= textwrap.wrap(str(matrix_funct(obj)), width=15)
-
+            num=int(request.POST['no_of_artifact'])
+            if num == 1:
+                obj = user_quiz_form.save(commit=False)
+                if request.POST['bold'] == 'True':
+                    f = font_map_bold[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
+                else:
+                    f = font_map[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
+                tag_line_text = str(obj.tag_line_text)
+                tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                matrix_text = str(matrix_funct(obj))
+                matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
                 W, H = (1200, 1200)
                 font = ImageFont.truetype(f, size=int(request.POST['font_size']))
                 tag_font = ImageFont.truetype(f, size=int(request.POST['tag_line_font_size']))
@@ -168,71 +181,115 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                     img = Image.new('RGB', (W, H), obj.solid_color)
 
                 else:
-                    img = Image.open(request.FILES['bg_image'])
-                    newsize = (1200, 1200)
-                    img = img.resize(newsize)
+                    if len(request.FILES)==0:
+                        response = {'message': 'No background image is chosen', 'status': 2}
+                        return HttpResponse(json.dumps(response), content_type='application/json')
+
+                    else:
+                        img = Image.open(request.FILES['bg_image'])
+                        newsize = (1200, 1200)
+                        img = img.resize(newsize)
+                alpha = int(int(request.POST['bg_transparency']) * 255 / 100)
+                alpha = 255 - alpha
+                img.putalpha(alpha)
                 d = ImageDraw.Draw(img)
-                font_width, font_height = d.textsize( matrix_text,font=font)
+                font_width, font_height = d.textsize(matrix_text, font=font)
                 new_width = (img.size[0] - font_width) / 2
                 new_height = (img.size[1] - font_height) / 2
-                #
-                w, h = d.textsize(tag_line_text,font=tag_font)
+
+                w, h = d.textsize(tag_line_text, font=tag_font)
                 # tag_width = (img.size[0] - w) /2
                 tag_height = (img.size[1] - h) / 8
 
-                MAX_W= img.size[0]
+                MAX_W = img.size[0]
                 current_h, pad = tag_height, 10
                 for line in tag_line_text_lines:
                     w, h = d.textsize(line, font=font)
-                    d.text(((MAX_W - w) / 2, current_h), line, font=font, fill=obj.font_color,anchor="mm")
+                    d.text(((MAX_W - w) / 2, current_h), line, font=font, fill=obj.font_color, anchor="mm")
                     current_h += h + pad
-
 
                 # d.text(xy=(tag_width, tag_height), text=tag_line_text, font=tag_font, fill=obj.font_color,
                 #        anchor="mm")
                 d.text(xy=(new_width, new_height), text=matrix_text, font=font, fill=obj.font_color,
                        anchor="mm")
-                img.save('media/test/' + 'test' + '.png')
-                response = {'image_url': '/media/test/test.png','status':1}
 
-                return HttpResponse(json.dumps(response),content_type='application/json')
+                if obj.test == True:
+                    img.save('media/test/' + 'test' + '.png')
+                    response = {'image_url': '/media/test/test.png','status':1}
+                    return HttpResponse(json.dumps(response),content_type='application/json')
+                else:
+                    obj.user = self.request.user
+                    obj.save()
+                    img.save('media/img/'+obj.artifact_name+'.png')
 
-
+                    return redirect(reverse('quiz'))
             else:
-                obj.user = self.request.user
-
-                obj.save()
-                matrix_funct(obj)
-                W, H = (1200, 1200)
-                font = ImageFont.truetype(f, size=int(request.POST['font_size']))
-                tag_font = ImageFont.truetype(f, size=int(request.POST['tag_line_font_size']))
-                if request.POST['bg_image_type'] == 's':
-                    img = Image.new('RGB', (W, H), obj.solid_color)
+                if 'test' in request.POST:
+                    response = {'message': "Can't run test on more than one artifacts", 'status': 2}
+                    return HttpResponse(json.dumps(response), content_type='application/json')
 
                 else:
-                    img = Image.open(request.FILES['bg_image'])
-                    newsize = (1200, 1200)
-                    img = img.resize(newsize)
-                d = ImageDraw.Draw(img)
-                font_width, font_height = font.getsize(str(matrix_funct(d)))
-                new_width = (img.size[0] - font_width) / 2
-                new_height = (img.size[1] - font_height * 0.21) / 2
+                    obj = user_quiz_form.save(commit=False)
+                    for _ in range(num):
 
-                w, h = d.textsize(str(obj.tag_line_text), font=tag_font)
-                tag_width = (img.size[0] - w) / 2
-                tag_height = (img.size[1] - h) / 8
+                        if request.POST['bold'] == 'True':
+                            f = font_map_bold[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
+                        else:
+                            f = font_map[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
+                        tag_line_text = str(obj.tag_line_text)
+                        tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                        matrix_text = str(matrix_funct(obj))
+                        matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
+                        W, H = (1200, 1200)
+                        font = ImageFont.truetype(f, size=int(request.POST['font_size']))
+                        tag_font = ImageFont.truetype(f, size=int(request.POST['tag_line_font_size']))
+                        if request.POST['bg_image_type'] == 's':
+                            img = Image.new('RGB', (W, H), obj.solid_color)
 
-                d.text(xy=(tag_width, tag_height), text=str(obj.tag_line_text), font=tag_font, fill=obj.font_color,
-                       anchor="mm")
-                d.text(xy=(new_width, new_height), text=str(matrix_funct(d)), font=font, fill=obj.font_color,
-                       anchor="mm")
-                img.save('media/img/'+obj.artifact_name+'.png')
+                        else:
+                            if len(request.FILES) == 0:
+                                response = {'message': 'No background image is chosen', 'status': 2}
+                                return HttpResponse(json.dumps(response), content_type='application/json')
 
-                return redirect(reverse('quiz'))
+                            else:
+                                img = Image.open(request.FILES['bg_image'])
+                                newsize = (1200, 1200)
+                                img = img.resize(newsize)
+                        alpha = int(int(request.POST['bg_transparency']) * 255 / 100)
+                        alpha = 255 - alpha
+                        img.putalpha(alpha)
+                        d = ImageDraw.Draw(img)
+                        font_width, font_height = d.textsize(matrix_text, font=font)
+                        new_width = (img.size[0] - font_width) / 2
+                        new_height = (img.size[1] - font_height) / 2
+
+                        w, h = d.textsize(tag_line_text, font=tag_font)
+                        # tag_width = (img.size[0] - w) /2
+                        tag_height = (img.size[1] - h) / 8
+
+                        MAX_W = img.size[0]
+                        current_h, pad = tag_height, 10
+                        for line in tag_line_text_lines:
+                            w, h = d.textsize(line, font=font)
+                            d.text(((MAX_W - w) / 2, current_h), line, font=font, fill=obj.font_color, anchor="mm")
+                            current_h += h + pad
+
+                        # d.text(xy=(tag_width, tag_height), text=tag_line_text, font=tag_font, fill=obj.font_color,
+                        #        anchor="mm")
+                        d.text(xy=(new_width, new_height), text=matrix_text, font=font, fill=obj.font_color,
+                               anchor="mm")
+
+                        obj.user = self.request.user
+                        obj.save()
+                        img.save('media/img/' + obj.artifact_name + '.png')
+
+                    return redirect(reverse('quiz'))
+
         else:
             print(user_quiz_form.errors, "++++++")
 
-        return render(request, self.template_name, context=context)
+        response = {'message': "some thing went wrong", 'status': 2}
+        return HttpResponse(json.dumps(response), content_type='application/json')
 
     def get(self, request, *args, **kwargs):
         context = super(UserQuizView, self).get_context_data(**kwargs)

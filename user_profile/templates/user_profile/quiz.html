@@ -16,6 +16,11 @@
             <div class="alert alert-success" id="generated" style="display:none" role="alert">
                 Quiz Generated Successfully!
             </div>
+            <div class="alert alert-danger" id="image_message" style="display:none" role="alert">
+
+            </div>
+
+
             <div class="card">
                 <div class="card-body">
                     <h2 class="h6">Quiz</h2>
@@ -72,13 +77,22 @@ function alertfunc(event){
                 if(json.status == 1){
                     window.open(window.location.origin+json.image_url, '_blank');
                  }
+                  else if  (json.status == 2){
+                    document.getElementById('image_message').style.display = 'block';
+                    document.getElementById('image_message').innerHTML = json.message;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setInterval(function () {
+                        document.getElementById('image_message').style.display = 'none';
+                    }, 5000);
+
+                 }
                  else{
 
-                document.getElementById('generated').style.display = 'block'
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                setInterval(function () {
-                    document.getElementById('generated').style.display = 'none';
-                }, 3000);
+                        document.getElementById('generated').style.display = 'block'
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        setInterval(function () {
+                            document.getElementById('generated').style.display = 'none';
+                        }, 3000);
                 }
             },
 
