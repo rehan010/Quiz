@@ -170,10 +170,17 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                     f = font_map_bold[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
                 else:
                     f = font_map[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
-                tag_line_text = str(obj.tag_line_text)
-                tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
-                matrix_text = str(matrix_funct(obj))
-                matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
+                if request.POST['quiz_type'] == 's':
+                    tag_line_text = str(obj.tag_line_text)
+                    tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                    matrix_text = str(matrix_funct(obj))
+                    matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
+                else:
+
+                    tag_line_text = str(obj.tag_line_text)
+                    tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                    matrix_text = str(matrix_funct(obj))
+                    matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
                 W, H = (1200, 1200)
                 font = ImageFont.truetype(f, size=int(request.POST['font_size']))
                 tag_font = ImageFont.truetype(f, size=int(request.POST['tag_line_font_size']))
@@ -236,10 +243,17 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                             f = font_map_bold[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
                         else:
                             f = font_map[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
-                        tag_line_text = str(obj.tag_line_text)
-                        tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
-                        matrix_text = str(matrix_funct(obj))
-                        matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
+                        if request.POST['quiz_type'] == 's':
+                            tag_line_text = str(obj.tag_line_text)
+                            tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                            matrix_text = str(matrix_funct(obj))
+                            matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
+                        else:
+
+                            tag_line_text = str(obj.tag_line_text)
+                            tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                            matrix_text = str(matrix_funct(obj))
+                            matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
                         W, H = (1200, 1200)
                         font = ImageFont.truetype(f, size=int(request.POST['font_size']))
                         tag_font = ImageFont.truetype(f, size=int(request.POST['tag_line_font_size']))
