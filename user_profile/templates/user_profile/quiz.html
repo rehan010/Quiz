@@ -53,12 +53,11 @@ function imagetype() {
 function alertfunc(event){
     if (confirm('Are you sure to generate quiz')) {
       // Save it!
-      console.log('Generated Successfully!');
       var endpoint = $('#user_quiz_form').attr("data-url");
       var token = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
       event.preventDefault();
       var data = new FormData($('#user_quiz_form').get(0));
-      console.log(data)
+
 
       $.ajax({
             type : "POST", // http method
@@ -70,11 +69,17 @@ function alertfunc(event){
 
             // handle a successful response
             success : function(json) {
+                if(json.status == 1){
+                    window.open(window.location.origin+json.image_url, '_blank');
+                 }
+                 else{
+
                 document.getElementById('generated').style.display = 'block'
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 setInterval(function () {
                     document.getElementById('generated').style.display = 'none';
                 }, 3000);
+                }
             },
 
             // handle a non-successful response

@@ -116,6 +116,10 @@ class UserQuiz(models.Model):
     bg_image_type = models.CharField(max_length=20, null=True, choices=BG_IMAGE_CHOICES,default='s')
     solid_color = models.CharField(max_length=50,null=True,blank=True, default="Blue")
     bg_image = models.ImageField(null=True,blank=True,default="https://www.w3schools.com/images/picture.jpg")
+    tag_line_font_size = models.IntegerField(default=25, null=True, blank=True)
+    tag_line_text = models.CharField(max_length=50, default="")
+    local_folder = models.CharField(max_length=100, default="/media")
+    test = models.BooleanField(default=True)
 
 
     def getImage(self):
