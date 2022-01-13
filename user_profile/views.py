@@ -16,6 +16,7 @@ import json
 import numpy as np
 import random
 import textwrap
+from os import path
 
 
 font_map={
@@ -227,7 +228,12 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                 else:
                     obj.user = self.request.user
                     obj.save()
-                    img.save('media/img/'+obj.artifact_name+'.png')
+                    if obj.local_folder != '/media' and path.isdir(obj.local_folder):
+                        img.save(obj.local_folder + obj.artifact_name + '.png')
+                    else:
+                        img.save('media/img/' + obj.artifact_name + '.png')
+
+
 
                     return redirect(reverse('quiz'))
             else:
@@ -295,7 +301,10 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
                         obj.user = self.request.user
                         obj.save()
-                        img.save('media/img/' + obj.artifact_name + '.png')
+                        if obj.local_folder != '/media' and path.isdir(obj.local_folder):
+                            img.save(obj.local_folder + obj.artifact_name + '.png')
+                        else:
+                            img.save('media/img/' + obj.artifact_name + '.png')
 
                     return redirect(reverse('quiz'))
 

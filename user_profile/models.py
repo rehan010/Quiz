@@ -118,6 +118,7 @@ class UserQuiz(models.Model):
     bg_image = models.ImageField(null=True,blank=True,default="https://www.w3schools.com/images/picture.jpg")
     tag_line_font_size = models.IntegerField(default=25, null=True, blank=True)
     tag_line_text = models.CharField(max_length=50, default="")
+    insrtctions = models.CharField(max_length=100, default=" ")
     local_folder = models.CharField(max_length=100, default="/media")
     test = models.BooleanField(default=True)
 
