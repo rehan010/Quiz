@@ -173,18 +173,23 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                     f = font_map[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
                 if request.POST['quiz_type'] == 's':
                     tag_line_text = str(obj.tag_line_text)
-                    tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                    tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=22)
+                    inst_text = str(obj.insrtctions)
+                    inst_text_lines = textwrap.wrap(str(obj.insrtctions), width=70)
                     matrix_text = str(matrix_funct(obj))
                     matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
                 else:
 
                     tag_line_text = str(obj.tag_line_text)
-                    tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                    tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=22)
+                    inst_text = str(obj.insrtctions)
+                    inst_text_lines = textwrap.wrap(str(obj.insrtctions), width=70)
                     matrix_text = str(matrix_funct(obj))
                     matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
                 W, H = (1200, 1200)
                 font = ImageFont.truetype(f, size=int(request.POST['font_size']))
                 tag_font = ImageFont.truetype(f, size=int(request.POST['tag_line_font_size']))
+                inst_font = ImageFont.truetype(f, size=25)
                 if request.POST['bg_image_type'] == 's':
                     img = Image.new('RGB', (W, H), obj.solid_color)
 
@@ -207,19 +212,32 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
                 w, h = d.textsize(tag_line_text, font=tag_font)
                 # tag_width = (img.size[0] - w) /2
-                tag_height = (img.size[1] - h) / 8
+                tag_height = (img.size[1] - h) / 6
 
                 MAX_W = img.size[0]
                 current_h, pad = tag_height, 10
                 for line in tag_line_text_lines:
-                    w, h = d.textsize(line, font=font)
-                    d.text(((MAX_W - w) / 2, current_h), line, font=font, fill=obj.font_color, anchor="mm")
+                    w, h = d.textsize(line, font=tag_font)
+                    d.text(((MAX_W - w) / 2, current_h), line, font=tag_font, fill=obj.font_color, anchor="mm")
                     current_h += h + pad
 
                 # d.text(xy=(tag_width, tag_height), text=tag_line_text, font=tag_font, fill=obj.font_color,
                 #        anchor="mm")
                 d.text(xy=(new_width, new_height), text=matrix_text, font=font, fill=obj.font_color,
                        anchor="mm")
+
+
+                wi, he = d.textsize(inst_text, font=inst_font)
+                # tag_width = (img.size[0] - w) /2
+                tag_height = (img.size[1] - he) / 1.2
+
+                MAX_W = img.size[0]
+                current_he, pad = tag_height, 10
+                for line in inst_text_lines:
+                    w, h = d.textsize(line, font=inst_font)
+                    d.text(((MAX_W - w) / 2, current_he), line, font=inst_font, fill=obj.font_color, anchor="mm")
+                    current_he += h + pad
+
 
                 if obj.test == True:
                     img.save('media/test/' + 'test' + '.png')
@@ -251,18 +269,23 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                             f = font_map[UserQuiz.FONT_CHOICES[int(request.POST['font_name']) - 1][1]]
                         if request.POST['quiz_type'] == 's':
                             tag_line_text = str(obj.tag_line_text)
-                            tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                            tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=20)
+                            inst_text = str(obj.insrtctions)
+                            inst_text_lines = textwrap.wrap(str(obj.insrtctions), width=70)
                             matrix_text = str(matrix_funct(obj))
                             matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
                         else:
 
                             tag_line_text = str(obj.tag_line_text)
-                            tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=30)
+                            tag_line_text_lines = textwrap.wrap(str(obj.tag_line_text), width=22)
+                            inst_text = str(obj.insrtctions)
+                            inst_text_lines = textwrap.wrap(str(obj.insrtctions), width=70)
                             matrix_text = str(matrix_funct(obj))
-                            matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
+                            matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=22)
                         W, H = (1200, 1200)
                         font = ImageFont.truetype(f, size=int(request.POST['font_size']))
                         tag_font = ImageFont.truetype(f, size=int(request.POST['tag_line_font_size']))
+                        inst_font = ImageFont.truetype(f, size=25)
                         if request.POST['bg_image_type'] == 's':
                             img = Image.new('RGB', (W, H), obj.solid_color)
 
@@ -285,19 +308,31 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
                         w, h = d.textsize(tag_line_text, font=tag_font)
                         # tag_width = (img.size[0] - w) /2
-                        tag_height = (img.size[1] - h) / 8
+                        tag_height = (img.size[1] - h) / 6
 
                         MAX_W = img.size[0]
                         current_h, pad = tag_height, 10
                         for line in tag_line_text_lines:
-                            w, h = d.textsize(line, font=font)
-                            d.text(((MAX_W - w) / 2, current_h), line, font=font, fill=obj.font_color, anchor="mm")
+                            w, h = d.textsize(line, font=tag_font)
+                            d.text(((MAX_W - w) / 2, current_h), line, font=tag_font, fill=obj.font_color, anchor="mm")
                             current_h += h + pad
 
                         # d.text(xy=(tag_width, tag_height), text=tag_line_text, font=tag_font, fill=obj.font_color,
                         #        anchor="mm")
                         d.text(xy=(new_width, new_height), text=matrix_text, font=font, fill=obj.font_color,
                                anchor="mm")
+
+                        wi, he = d.textsize(inst_text, font=inst_font)
+                        # tag_width = (img.size[0] - w) /2
+                        tag_height = (img.size[1] - he) / 1.2
+
+                        MAX_W = img.size[0]
+                        current_he, pad = tag_height, 10
+                        for line in inst_text_lines:
+                            w, h = d.textsize(line, font=inst_font)
+                            d.text(((MAX_W - w) / 2, current_he), line, font=inst_font, fill=obj.font_color,
+                                   anchor="mm")
+                            current_he += h + pad
 
                         obj.user = self.request.user
                         obj.save()

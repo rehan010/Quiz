@@ -28,6 +28,9 @@ class UserQuizModelForm(forms.ModelForm):
             'retention_period': "Retention period (days)",
             'bg_image_type': "Background image type",
             'bg_image': "Background image",
+            'tag_line_text': "Header",
+            'tag_line_font_size': "Header Font Size",
+            'insrtctions': "Instructions",
         }
 
 

@@ -3,8 +3,15 @@
 {% load i18n %}
 {% load bootstrap4 %}
 
-{% block head_title %}{% trans "User Status" %}{% endblock %}
+{% block head_title %}{% trans "Quiz" %}{% endblock %}
+{% block css %}
+<style>
+#id_no_of_artifact ,#id_bg_transparency,#id_artifact_name ,#id_quiz_type,#id_difficulty,#id_font_size,#id_font_name,#id_font_color,#id_bold,#id_retention_period,#id_file_share_path,#id_bg_image_type,#id_solid_color,#id_bg_image,#id_tag_line_font_size,#id_tag_line_text,#id_local_folder,#id_insrtctions {
+    width: 200px;
+}
 
+</style>
+{% endblock %}
 {% block content %}
 <div class="container mt-3">
     <div class="row">
@@ -54,7 +61,7 @@
                         {% if redirect_field_value %}
                         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                         {% endif %}
-                        <button type="button" onclick="alertfunc(event)" class="btn btn-primary btn-lg btn-block" >Quiz </button>
+                        <button type="button" onclick="alertfunc(event)" class="btn btn-primary btn-sm btn-block" >Quiz </button>
                     </form>
                 </div>
             </div>
