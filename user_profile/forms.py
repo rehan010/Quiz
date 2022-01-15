@@ -15,8 +15,8 @@ class UserProfileModelForm(forms.ModelForm):
 class UserQuizModelForm(forms.ModelForm):
     class Meta:
         model = UserQuiz
-        fields = ('no_of_artifact','bg_transparency','quiz_type','difficulty','font_name','font_size','font_color','bold','retention_period',
-                  'file_share_path','bg_image_type','solid_color','bg_image','tag_line_font_size','tag_line_text','local_folder','insrtctions', 'test')
+        fields = ('no_of_artifact','bg_transparency','quiz_type','difficulty','font_name','font_size','font_color','bold','retention_period'
+                  ,'bg_image_type','solid_color','bg_image','tag_line_font_size','tag_line_text','local_folder','insrtctions', 'test')
         widgets = {
             'no_of_artifact': TextInput(attrs={'type': 'number','min':'1'}),
             'bg_transparency': TextInput(attrs={'type': 'number','min':'1'}),

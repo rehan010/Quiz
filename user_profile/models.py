@@ -112,7 +112,7 @@ class UserQuiz(models.Model):
     font_color = models.CharField(max_length=20,default="White")
     bold = models.BooleanField(choices=BOOL_CHOICES,default=False)
     retention_period = models.IntegerField(default=270,null=True,blank=True)
-    file_share_path = models.CharField(max_length=100, default="https://")
+
     bg_image_type = models.CharField(max_length=20, null=True, choices=BG_IMAGE_CHOICES,default='s')
     solid_color = models.CharField(max_length=50,null=True,blank=True, default="Blue")
     bg_image = models.ImageField(null=True,blank=True,default="https://www.w3schools.com/images/picture.jpg")

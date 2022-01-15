@@ -6,7 +6,7 @@
 {% block head_title %}{% trans "Quiz" %}{% endblock %}
 {% block css %}
 <style>
-#id_no_of_artifact ,#id_bg_transparency,#id_artifact_name ,#id_quiz_type,#id_difficulty,#id_font_size,#id_font_name,#id_font_color,#id_bold,#id_retention_period,#id_file_share_path,#id_bg_image_type,#id_solid_color,#id_bg_image,#id_tag_line_font_size,#id_tag_line_text,#id_local_folder,#id_insrtctions {
+#id_no_of_artifact ,#id_bg_transparency,#id_artifact_name ,#id_quiz_type,#id_difficulty,#id_font_size,#id_font_name,#id_font_color,#id_bold,#id_retention_period,#id_file_share_path,#id_bg_image_type,#id_solid_color,#id_bg_image,#id_tag_line_font_size {
     width: 200px;
 }
 
@@ -49,7 +49,6 @@
                         {% bootstrap_field user_quiz_form.font_color layout='horizontal' size='sm'%}
                         {% bootstrap_field user_quiz_form.bold layout='horizontal' size='sm'%}
                         {% bootstrap_field user_quiz_form.retention_period layout='horizontal' size='sm'%}
-                        {% bootstrap_field user_quiz_form.file_share_path layout='horizontal' size='sm'%}
                         {% bootstrap_field user_quiz_form.bg_image_type layout='horizontal' size='sm'%}
                         {% bootstrap_field user_quiz_form.solid_color layout='horizontal' size='sm'%}
                         {% bootstrap_field user_quiz_form.bg_image layout='horizontal' size='sm'%}

@@ -5,7 +5,7 @@ from user_profile.models import UserProfile,UserQuiz
 
 class QuizInline(admin.ModelAdmin):
     list_display = ('user','artifact_name','no_of_artifact','bg_transparency','quiz_type','difficulty','font_name','font_size','font_color','bold','retention_period',
-                  'file_share_path','bg_image_type','solid_color','bg_image')
+                  'bg_image_type','solid_color','bg_image')
     search_fields = ('artifact_name',)
 
 admin.site.register(UserProfile)
