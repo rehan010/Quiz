@@ -165,6 +165,13 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
         if user_quiz_form.is_valid() :
             num=int(request.POST['no_of_artifact'])
+            logo =False
+            if 'logo_image' in request.FILES:
+                logo = True
+                logo_img = Image.open(request.FILES['logo_image'])
+                logo_size = (300, 250)
+                logo_img = logo_img.resize(logo_size)
+
             if num == 1:
                 obj = user_quiz_form.save(commit=False)
                 if request.POST['bold'] == 'True':
@@ -194,14 +201,15 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                     img = Image.new('RGB', (W, H), obj.solid_color)
 
                 else:
-                    if len(request.FILES)==0:
-                        response = {'message': 'No background image is chosen', 'status': 2}
-                        return HttpResponse(json.dumps(response), content_type='application/json')
-
-                    else:
+                    if 'bg_image' in request.FILES:
                         img = Image.open(request.FILES['bg_image'])
                         newsize = (1200, 1200)
                         img = img.resize(newsize)
+
+                    else:
+                        response = {'message': 'No background image is chosen', 'status': 2}
+                        return HttpResponse(json.dumps(response), content_type='application/json')
+
                 alpha = int(int(request.POST['bg_transparency']) * 255 / 100)
                 alpha = 255 - alpha
                 img.putalpha(alpha)
@@ -237,7 +245,8 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                     w, h = d.textsize(line, font=inst_font)
                     d.text(((MAX_W - w) / 2, current_he), line, font=inst_font, fill=obj.font_color, anchor="mm")
                     current_he += h + pad
-
+                if logo:
+                    img.paste(logo_img,(50,50))
 
                 if obj.test == True:
                     img.save('media/test/' + 'test' + '.png')
@@ -290,14 +299,15 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                             img = Image.new('RGB', (W, H), obj.solid_color)
 
                         else:
-                            if len(request.FILES) == 0:
-                                response = {'message': 'No background image is chosen', 'status': 2}
-                                return HttpResponse(json.dumps(response), content_type='application/json')
-
-                            else:
+                            if 'bg_image' in request.FILES:
                                 img = Image.open(request.FILES['bg_image'])
                                 newsize = (1200, 1200)
                                 img = img.resize(newsize)
+
+                            else:
+                                response = {'message': 'No background image is chosen', 'status': 2}
+                                return HttpResponse(json.dumps(response), content_type='application/json')
+
                         alpha = int(int(request.POST['bg_transparency']) * 255 / 100)
                         alpha = 255 - alpha
                         img.putalpha(alpha)
@@ -336,6 +346,10 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
                         obj.user = self.request.user
                         obj.save()
+                        if logo:
+                            img.paste(logo_img, (50, 50))
+
+
                         if obj.local_folder != '/media' and path.isdir(obj.local_folder):
                             img.save(obj.local_folder + obj.artifact_name + '.png')
                         else:
