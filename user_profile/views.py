@@ -220,7 +220,7 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
                 w, h = d.textsize(tag_line_text, font=tag_font)
                 # tag_width = (img.size[0] - w) /2
-                tag_height = (img.size[1] - h) / 6
+                tag_height = (img.size[1] - h) /3
 
                 MAX_W = img.size[0]
                 current_h, pad = tag_height, 10
@@ -246,7 +246,7 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                     d.text(((MAX_W - w) / 2, current_he), line, font=inst_font, fill=obj.font_color, anchor="mm")
                     current_he += h + pad
                 if logo:
-                    img.paste(logo_img,(50,50))
+                    img.paste(logo_img,(400,50))
 
                 if obj.test == True:
                     img.save('media/test/' + 'test' + '.png')
@@ -314,11 +314,11 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                         d = ImageDraw.Draw(img)
                         font_width, font_height = d.textsize(matrix_text, font=font)
                         new_width = (img.size[0] - font_width) / 2
-                        new_height = (img.size[1] - font_height) / 2
+                        new_height = (img.size[1] - font_height) / 1.7
 
                         w, h = d.textsize(tag_line_text, font=tag_font)
                         # tag_width = (img.size[0] - w) /2
-                        tag_height = (img.size[1] - h) / 6
+                        tag_height = (img.size[1] - h) / 3
 
                         MAX_W = img.size[0]
                         current_h, pad = tag_height, 10
@@ -347,7 +347,7 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                         obj.user = self.request.user
                         obj.save()
                         if logo:
-                            img.paste(logo_img, (50, 50))
+                            img.paste(logo_img, (400, 50))
 
 
                         if obj.local_folder != '/media' and path.isdir(obj.local_folder):
