@@ -1,5 +1,4 @@
-import textwrap
-from string import ascii_letters
+
 from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
@@ -17,6 +16,11 @@ import numpy as np
 import random
 import textwrap
 from os import path
+import pandas as pd
+import dataframe_image as dfi
+
+from pandas.plotting import table
+import matplotlib.pyplot as plt
 
 
 font_map={
@@ -184,7 +188,7 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                     inst_text = str(obj.insrtctions)
                     inst_text_lines = textwrap.wrap(str(obj.insrtctions), width=70)
                     matrix_text = str(matrix_funct(obj))
-                    matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
+                    matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=14)
                 else:
 
                     tag_line_text = str(obj.tag_line_text)
@@ -192,7 +196,7 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                     inst_text = str(obj.insrtctions)
                     inst_text_lines = textwrap.wrap(str(obj.insrtctions), width=70)
                     matrix_text = str(matrix_funct(obj))
-                    matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=15)
+                    matrix_text_lines = textwrap.wrap(str(matrix_funct(obj)), width=14)
                 W, H = (1200, 1200)
                 font = ImageFont.truetype(f, size=int(request.POST['font_size']))
                 tag_font = ImageFont.truetype(f, size=int(request.POST['tag_line_font_size']))
@@ -231,13 +235,58 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
 
                 # d.text(xy=(tag_width, tag_height), text=tag_line_text, font=tag_font, fill=obj.font_color,
                 #        anchor="mm")
-                d.text(xy=(new_width, new_height), text=matrix_text, font=font, fill=obj.font_color,
-                       anchor="mm")
+                # d.text(xy=(new_width, new_height), text=matrix_text, font=font, fill=obj.font_color,
+                #        anchor="mm")
+
+                splitter= list(filter(None,matrix_text.split(" ")))
+                i=0
+
+                char_font_width, char_font_height = d.textsize(str(splitter[0]), font=font)
+                char_width = (img.size[0] - char_font_width) / 8
+                char_height = (img.size[1] - char_font_height) / 1.7
+
+                if int(request.POST['font_size']) > 100:
+
+                    shape = [char_width , char_height - 100, char_width +int(request.POST['font_size'])+ 100, char_height ]
+                else:
+                    shape = [char_width , char_height - 100, char_width +int(request.POST['font_size'])+ 100, char_height ]
+
+
+                for _ in splitter:
+
+                    if i == 0:
+                        pass
+                    elif i % 5 == 0:
+                        shape[0] = char_width
+                        shape[1] = shape[1]
+                        shape[2] = char_width+int(request.POST['font_size']) + 100
+                        shape[3] = shape[3] + 100
+                    else:
+                        shape[0]=shape[0] +int(request.POST['font_size'])+100
+                        shape[2]=shape[2]+int(request.POST['font_size'])+100
+
+                    print(_)
+
+                    print("x1,y1 "+ str(shape[0]) +","+str(shape[1]) +"|"+"x2,y2 "+ str(shape[2]) +","+str(shape[1])
+                          +"|"+"x3,y3" + str(shape[0]) + "," + str(shape[3])+"|"+"x4,y4" + str(shape[2]) + "," + str(shape[3]))
+                    print(str((shape[0]+shape[2])/2) +","+ str((shape[1]+shape[3])/2) )
+
+                    center = [(shape[0]+shape[2])/2 - 50, shape[3]-100]
+
+                    d.text(xy=(center[0],center[1]), text=_, align="center" , font=font, fill=obj.font_color,
+                           anchor="mm")
+                    d.rectangle(shape, outline='black')
+                    i=i+1
+
+                # w, h = d.textsize(matrix, font=font)
+                    # d.text(((MAX_W - w) / 2, current_h), line, font=tag_font, fill=obj.font_color, anchor="mm")
+                    # current_h += h + pad
 
 
                 wi, he = d.textsize(inst_text, font=inst_font)
                 # tag_width = (img.size[0] - w) /2
                 tag_height = (img.size[1] - he) / 1.2
+
 
                 MAX_W = img.size[0]
                 current_he, pad = tag_height, 10
@@ -331,6 +380,7 @@ class UserQuizView(TemplateView, LoginRequiredMixin):
                         #        anchor="mm")
                         d.text(xy=(new_width, new_height), text=matrix_text, font=font, fill=obj.font_color,
                                anchor="mm")
+
 
                         wi, he = d.textsize(inst_text, font=inst_font)
                         # tag_width = (img.size[0] - w) /2
